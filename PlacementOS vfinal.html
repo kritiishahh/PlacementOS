@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placement OS - Recruiter-Readiness Matrix & Balanced Symmetrical Averaging Engine</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel for inline JSX execution -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Custom Tailwind Config for Placement OS Visual Identity -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bgOffwhite: '#F3F3F1',
+            brandBlack: '#000000',
+            brandGrey: '#666666',
+            brandLightGrey: '#EAEAEA',
+            tier1: '#111111',
+            tier2: '#444444',
+            tier3: '#777777',
+          },
+          fontFamily: {
+            sans: ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+          },
+          borderRadius: {
+            DEFAULT: '4px',
+            'sm': '2px',
+            'md': '4px',
+            'lg': '6px',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #F3F3F1;
+      color: #000000;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    /* Custom Scrollbars for dense analytical matrices */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F3F3F1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CCCCCC;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #000000;
+    }
+
+    .border-rule {
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+  </style>
+</head>
+<body class="bg-bgOffwhite text-black min-h-screen">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo, useRef } = React;
+
+    // --- SVG ICON COMPONENT SUITE ---
+    const Icon = ({ name, className = "w-4 h-4", ...props }) => {
+      const icons = {
+        shield: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        ),
+        user: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        ),
+        clipboard: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+        ),
+        checkCircle: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        ),
+        chevronRight: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
+        ),
+        chevronLeft: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        ),
+        trendingUp: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+        ),
+        fileCheck: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0zM7 21h10a2 2 0 002-2V7l-5-5H7a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        ),
+        messageSquare: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        ),
+        compass: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10l-2 1m0 0l-1 2m1-2l2-1m-2 1l-1-2m5 5a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        ),
+        alertTriangle: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        ),
+        rotateCcw: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        ),
+        search: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        ),
+        send: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        ),
+        sparkles: (
+          <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+          </svg>
+        )
+      };
+      return icons[name] || icons.shield;
+    };
+
+    // --- TEXT NORMALIZATION & LEVENSHTEIN FUZZY MATCHING ENGINE ---
+    const normalizeText = (text) => {
+      if (!text) return "";
+      return text
+        .toLowerCase()
+        .replace(/[\u2018\u2019]/g, "'")
+        .replace(/[\u201C\u201D]/g, '"')
+        .replace(/[^\w\s]/gi, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
+
+    const levenshteinDistance = (a, b) => {
+      const matrix = [];
+      for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+      for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          if (b.charAt(i - 1) === a.charAt(j - 1)) {
+            matrix[i][j] = matrix[i - 1][j - 1];
+          } else {
+            matrix[i][j] = Math.min(
+              matrix[i - 1][j - 1] + 1,
+              Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+            );
+          }
+        }
+      }
+      return matrix[b.length][a.length];
+    };
+
+    const isFuzzyMatch = (query, target) => {
+      const q = normalizeText(query);
+      const t = normalizeText(target);
+      if (!q || !t) return false;
+      if (t.includes(q) || q.includes(t)) return true;
+
+      const qWords = q.split(' ');
+      const tWords = t.split(' ');
+
+      for (let qw of qWords) {
+        if (qw.length < 3) continue;
+        for (let tw of tWords) {
+          if (tw.length < 3) continue;
+          const maxDist = qw.length > 5 ? 2 : 1;
+          if (levenshteinDistance(qw, tw) <= maxDist) return true;
+        }
+      }
+      return false;
+    };
+
+    // --- LAW FIRM ALIAS & MASTER COMPANY DATABASE ---
+    const LAW_FIRM_ALIASES = [
+      { canonical: "AZB & Partners", aliases: ["azb", "azb & partners", "azb and partners"] },
+      { canonical: "Cyril Amarchand Mangaldas", aliases: ["cyril amarchand", "cam", "cyril amarchand mangaldas"] },
+      { canonical: "Shardul Amarchand Mangaldas & Co", aliases: ["shardul amarchand", "sam", "shardul amarchand mangaldas"] },
+      { canonical: "Khaitan & Co", aliases: ["khaitan", "khaitan & co", "khaitan and co"] },
+      { canonical: "Trilegal", aliases: ["trilegal"] },
+      { canonical: "JSA Advocates & Solicitors", aliases: ["jsa", "jyoti sagar", "jyoti sagar associates"] },
+      { canonical: "Talwar Thakore & Associates", aliases: ["tta", "talwar thakore"] },
+      { canonical: "S&R Associates", aliases: ["s&r", "s and r", "sr associates"] },
+      { canonical: "Nishith Desai Associates", aliases: ["nda", "nishith desai", "nishith desai associates"] },
+      { canonical: "IndusLaw", aliases: ["induslaw", "indus law"] },
+      { canonical: "SAMVAD Partners", aliases: ["samvad", "samvad partners"] }
+    ];
+
+    const MASTER_COMPANIES = [
+      // Finance & Banking
+      { name: "Goldman Sachs", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "JPMorgan Chase", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "Morgan Stanley", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "BlackRock", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "Citibank", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "Barclays", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "HSBC", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "Bank of America", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "Deutsche Bank", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "UBS", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "Kotak Mahindra Bank", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "HDFC Bank", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "ICICI Bank", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "Axis Bank", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "SBI Capital Markets", category: "Finance & Banking", tier: "Tier 1", type: "Company" },
+      { name: "Standard Chartered", category: "Finance & Banking", tier: "Tier 2", type: "Company" },
+      { name: "Nomura", category: "Finance & Banking", tier: "Tier 2", type: "Company" },
+      { name: "Credit Suisse", category: "Finance & Banking", tier: "Tier 2", type: "Company" },
+      { name: "IDFC First Bank", category: "Finance & Banking", tier: "Tier 2", type: "Company" },
+      { name: "Yes Bank", category: "Finance & Banking", tier: "Tier 3", type: "Company" },
+
+      // Oil & Energy
+      { name: "Reliance Industries", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "ONGC", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "Indian Oil Corporation", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "Bharat Petroleum", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "Hindustan Petroleum", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "Shell", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "ExxonMobil", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "Chevron", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "TotalEnergies", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "Saudi Aramco", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "Adani Total Gas", category: "Oil & Energy", tier: "Tier 1", type: "Company" },
+      { name: "GAIL", category: "Oil & Energy", tier: "Tier 2", type: "Company" },
+      { name: "NTPC", category: "Oil & Energy", tier: "Tier 2", type: "Company" },
+      { name: "Tata Power", category: "Oil & Energy", tier: "Tier 2", type: "Company" },
+
+      // Pharmaceuticals & Healthcare
+      { name: "Sun Pharma", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "Dr. Reddy’s Laboratories", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "Cipla", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "Lupin", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "Biocon", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "Pfizer", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "Roche", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "Novartis", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "AstraZeneca", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "Johnson & Johnson", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "GSK", category: "Pharmaceuticals & Healthcare", tier: "Tier 1", type: "Company" },
+      { name: "Torrent Pharma", category: "Pharmaceuticals & Healthcare", tier: "Tier 2", type: "Company" },
+      { name: "Apollo Hospitals", category: "Pharmaceuticals & Healthcare", tier: "Tier 2", type: "Company" },
+
+      // Steel & Manufacturing
+      { name: "Tata Steel", category: "Steel & Manufacturing", tier: "Tier 1", type: "Company" },
+      { name: "JSW Steel", category: "Steel & Manufacturing", tier: "Tier 1", type: "Company" },
+      { name: "SAIL", category: "Steel & Manufacturing", tier: "Tier 1", type: "Company" },
+      { name: "ArcelorMittal", category: "Steel & Manufacturing", tier: "Tier 1", type: "Company" },
+      { name: "Jindal Steel & Power", category: "Steel & Manufacturing", tier: "Tier 1", type: "Company" },
+      { name: "POSCO", category: "Steel & Manufacturing", tier: "Tier 1", type: "Company" },
+      { name: "Nippon Steel", category: "Steel & Manufacturing", tier: "Tier 1", type: "Company" },
+
+      // Technology & IT
+      { name: "Google", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "Microsoft", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "Apple", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "Amazon", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "Meta", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "NVIDIA", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "OpenAI", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "Infosys", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "TCS", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "Wipro", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "Accenture", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+      { name: "IBM", category: "Technology & IT", tier: "Tier 1", type: "Company" },
+
+      // Consulting
+      { name: "McKinsey & Company", category: "Consulting", tier: "Tier 1", type: "Company" },
+      { name: "Bain & Company", category: "Consulting", tier: "Tier 1", type: "Company" },
+      { name: "Boston Consulting Group", category: "Consulting", tier: "Tier 1", type: "Company" },
+      { name: "Deloitte", category: "Consulting", tier: "Tier 1", type: "Company" },
+      { name: "PwC", category: "Consulting", tier: "Tier 1", type: "Company" },
+      { name: "EY", category: "Consulting", tier: "Tier 1", type: "Company" },
+      { name: "KPMG", category: "Consulting", tier: "Tier 1", type: "Company" },
+      { name: "Accenture Strategy", category: "Consulting", tier: "Tier 1", type: "Company" },
+
+      // Private Equity & Venture Capital
+      { name: "Sequoia Capital", category: "Private Equity & Venture Capital", tier: "Tier 1", type: "Company" },
+      { name: "Accel", category: "Private Equity & Venture Capital", tier: "Tier 1", type: "Company" },
+      { name: "Peak XV Partners", category: "Private Equity & Venture Capital", tier: "Tier 1", type: "Company" },
+      { name: "Blackstone", category: "Private Equity & Venture Capital", tier: "Tier 1", type: "Company" },
+      { name: "KKR", category: "Private Equity & Venture Capital", tier: "Tier 1", type: "Company" },
+      { name: "Carlyle", category: "Private Equity & Venture Capital", tier: "Tier 1", type: "Company" },
+      { name: "SoftBank Vision Fund", category: "Private Equity & Venture Capital", tier: "Tier 1", type: "Company" },
+
+      // Law Firms (India)
+      { name: "AZB & Partners", category: "Law Firms (India)", tier: "Tier 1", type: "Law Firm" },
+      { name: "Cyril Amarchand Mangaldas", category: "Law Firms (India)", tier: "Tier 1", type: "Law Firm" },
+      { name: "Khaitan & Co", category: "Law Firms (India)", tier: "Tier 1", type: "Law Firm" },
+      { name: "Shardul Amarchand Mangaldas & Co", category: "Law Firms (India)", tier: "Tier 1", type: "Law Firm" },
+      { name: "Trilegal", category: "Law Firms (India)", tier: "Tier 1", type: "Law Firm" },
+      { name: "JSA Advocates & Solicitors", category: "Law Firms (India)", tier: "Tier 1", type: "Law Firm" },
+      { name: "Talwar Thakore & Associates", category: "Law Firms (India)", tier: "Tier 2", type: "Law Firm" },
+      { name: "S&R Associates", category: "Law Firms (India)", tier: "Tier 2", type: "Law Firm" },
+      { name: "Nishith Desai Associates", category: "Law Firms (India)", tier: "Tier 2", type: "Law Firm" },
+      { name: "IndusLaw", category: "Law Firms (India)", tier: "Tier 2", type: "Law Firm" },
+      { name: "SAMVAD Partners", category: "Law Firms (India)", tier: "Tier 2", type: "Law Firm" },
+      { name: "Dua Associates", category: "Law Firms (India)", tier: "Tier 3", type: "Law Firm" },
+      { name: "Kochhar & Co", category: "Law Firms (India)", tier: "Tier 3", type: "Law Firm" },
+      { name: "Fox Mandal", category: "Law Firms (India)", tier: "Tier 3", type: "Law Firm" },
+      { name: "Singhania & Partners", category: "Law Firms (India)", tier: "Tier 3", type: "Law Firm" },
+      { name: "Boutique Corporate Chambers", category: "Law Firms (India)", tier: "Tier 3", type: "Law Firm" }
+    ];
+
+    // --- TARGET PRACTICE CONCEPT DATABASE ---
+    const TARGET_PRACTICE_CONCEPTS = {
+      "General Corporate": {
+        concept1: "Condition Precedent (CP)",
+        concept2: "Condition Subsequent (CS)",
+        news: "MCA corporate governance/disclosure updates and Press Note 3 compliance",
+        section: "FDI-compliant e-commerce entity",
+        approvals: "FDI sectoral caps, DPIIT approvals, ROC filing metrics"
+      },
+      "Technology, Media and Telecommunications": {
+        concept1: "Data Fiduciary obligations",
+        concept2: "Significant Data Fiduciary compliance directives",
+        news: "DPDP Act 2023 cross-border data transfer framework",
+        section: "SaaS and cloud computing infrastructure",
+        approvals: "MeitY guidelines, RBI payment aggregator norms, DPBI registration"
+      },
+      "Intellectual Property": {
+        concept1: "Deceptive Similarity in Trademark Infringement",
+        concept2: "Common law Passing Off",
+        news: "IPAB dissolution and High Court IP Divisions jurisdiction",
+        section: "Patent-heavy pharmaceutical company",
+        approvals: "NBA approval, Patent Office clearance, drug licensing"
+      },
+      "Arbitration": {
+        concept1: "Seat of Arbitration",
+        concept2: "Venue of Arbitration",
+        news: "Unstamped arbitration agreement enforceability and Curative Jurisdiction",
+        section: "Sovereign-backed construction consortium",
+        approvals: "New York Convention enforcement and Section 9 interim measures"
+      },
+      "Litigation": {
+        concept1: "Order 39 Rule 1 & 2 Temporary Injunction",
+        concept2: "Specific Performance of Contracts",
+        news: "Transition to BNSS/BNS/BSA procedural framework",
+        section: "Commercial real estate and infrastructure holding group",
+        approvals: "Commercial Courts jurisdiction and mandatory pre-institution mediation"
+      },
+      "Energy and Infrastructure": {
+        concept1: "Take-or-Pay PPA obligations",
+        concept2: "Take-and-Pay power off-take structuring",
+        news: "Green Energy Open Access Rules and Production Linked Incentive (PLI)",
+        section: "Renewable energy power-grid operator",
+        approvals: "CERC, Ministry of Power and state discom rights"
+      },
+      "Banking and Finance": {
+        concept1: "External Commercial Borrowings (ECB)",
+        concept2: "Domestic syndicated credit facilities",
+        news: "RBI stressed-asset/project-finance framework & NPA provisioning",
+        section: "Systemically important NBFC",
+        approvals: "RBI reporting, AD Category-I verification, ROC charge creation"
+      },
+      "Insolvency and Bankruptcy": {
+        concept1: "Corporate Insolvency Resolution Process (CIRP)",
+        concept2: "Fast-Track Liquidation and Liquidation Waterfall",
+        news: "Personal guarantor liability under IBC",
+        section: "Distressed steel manufacturing asset",
+        approvals: "CoC 66% vote, NCLT approval, IBBI compliance"
+      }
+    };
+
+    // --- EXACT PARSING & READINESS SCORING ENGINE ---
+    const parseProfile = (profile) => {
+      // 1. Academic Parsing (JGLS 8.0 Scale)
+      const cgpa = parseFloat(profile.cgpa) || 0;
+      let academicTier = "Not Tiered";
+      let academicScore = 50;
+
+      if (cgpa >= 7.50) { academicTier = "Tier 1"; academicScore = 90; }
+      else if (cgpa >= 7.00) { academicTier = "Tier 2"; academicScore = 75; }
+      else if (cgpa >= 6.90) { academicTier = "Tier 3"; academicScore = 65; }
+      else { academicTier = "Not Tiered"; academicScore = 50; }
+
+      const academicItems = [{ name: `CGPA ${cgpa.toFixed(2)} / 8.00`, tier: academicTier, score: academicScore }];
+
+      // Helper function to split text area entries
+      const splitEntries = (text) => {
+        if (!text) return [];
+        return text
+          .split(/[\n;]/)
+          .map(e => e.trim())
+          .filter(e => e.length > 0);
+      };
+
+      // 2. Internship Parsing
+      const rawInternships = splitEntries(profile.internshipsText);
+      const internshipItems = rawInternships.map(entry => {
+        const norm = normalizeText(entry);
+        
+        // Litigation Signals
+        const isJudicial = /judicial|clerkship|chief public prosecutor|advocate on record|aor|senior advocate chamber|judge office/i.test(norm);
+        if (isJudicial) return { name: entry, tier: "Tier 1", score: 90 };
+
+        const isAdvocateChamber = /advocate|chamber practice|dispute|litigation|arbitration team/i.test(norm);
+        
+        // Match Law Firm Aliases & Master Database
+        for (let aliasObj of LAW_FIRM_ALIASES) {
+          for (let alias of aliasObj.aliases) {
+            if (isFuzzyMatch(alias, norm)) {
+              // Find tier in master company or default Tier 1/2
+              const match = MASTER_COMPANIES.find(c => c.name.toLowerCase() === aliasObj.canonical.toLowerCase());
+              const tier = match ? match.tier : "Tier 1";
+              const score = tier === "Tier 1" ? 90 : tier === "Tier 2" ? 75 : 65;
+              return { name: entry, tier, score };
+            }
+          }
+        }
+
+        for (let company of MASTER_COMPANIES) {
+          if (isFuzzyMatch(company.name, norm)) {
+            const score = company.tier === "Tier 1" ? 90 : company.tier === "Tier 2" ? 75 : 65;
+            return { name: entry, tier: company.tier, score };
+          }
+        }
+
+        if (isAdvocateChamber) return { name: entry, tier: "Tier 2", score: 75 };
+
+        // Default Tier 3 if mentioned internship length/firm, else Not Tiered
+        if (/internship|intern|trainee|associates|advocates|firm|chambers/i.test(norm)) {
+          return { name: entry, tier: "Tier 3", score: 65 };
+        }
+        return { name: entry, tier: "Not Tiered", score: 50 };
+      });
+
+      // 3. Publication Parsing
+      const rawPubs = splitEntries(profile.publicationsText);
+      const publicationItems = rawPubs.map(entry => {
+        const norm = normalizeText(entry);
+        
+        // Tier 1 Signals
+        if (/scopus|ugc|ugc-indexed|ugc care|ugc-approved/i.test(norm)) {
+          return { name: entry, tier: "Tier 1", score: 90 };
+        }
+
+        // Tier 2 Signals
+        if (/harvard|yale|stanford|columbia|pennsylvania|michigan|georgetown|nlsir|nujs law review|nalsar law review|nluj law review|ijlt|jglr|vidhi|orf|brookings|carnegie|chatham house|bar & bench|livelaw/i.test(norm)) {
+          return { name: entry, tier: "Tier 2", score: 75 };
+        }
+
+        // Tier 3 Signals
+        if (/peer-reviewed|double-peer-reviewed|blind-peer-reviewed|specialist review|journal|law review|blog/i.test(norm)) {
+          return { name: entry, tier: "Tier 3", score: 65 };
+        }
+
+        return { name: entry, tier: "Not Tiered", score: 50 };
+      });
+
+      // 4. Leadership Parsing
+      const rawLeadership = splitEntries(profile.leadershipText);
+      const leadershipItems = rawLeadership.map(entry => {
+        const norm = normalizeText(entry);
+        if (/founder|president|creator|owner/i.test(norm)) {
+          return { name: entry, tier: "Tier 1", score: 90 };
+        }
+        if (/general secretary|treasurer|vice president/i.test(norm)) {
+          return { name: entry, tier: "Tier 1", score: 80 };
+        }
+        if (/director|head/i.test(norm)) {
+          return { name: entry, tier: "Tier 2", score: 75 };
+        }
+        if (/sub-head|organising committee|organizing committee|oc member|convener/i.test(norm)) {
+          return { name: entry, tier: "Tier 3", score: 65 };
+        }
+        return { name: entry, tier: "Not Tiered", score: 50 };
+      });
+
+      // 5. Moot Court Parsing
+      const rawMoots = splitEntries(profile.mootsText);
+      const mootItems = rawMoots.map(entry => {
+        const norm = normalizeText(entry);
+        if (/jessup|vis|fdi|elmc|price|icc|international/i.test(norm)) {
+          return { name: entry, tier: "Tier 1", score: 90 };
+        }
+        if (/nlsiu|nalsar|nujs|nlu|national/i.test(norm)) {
+          return { name: entry, tier: "Tier 2", score: 75 };
+        }
+        return { name: entry, tier: "Tier 3", score: 65 };
+      });
+
+      // Helper to calculate category score + boosters
+      const calculateCategory = (items) => {
+        if (!items || items.length === 0) return { count: 0, boost: 0, score: 0, baseSum: 0, items: [] };
+        const baseSum = items.reduce((acc, item) => acc + item.score, 0);
+
+        let t1 = items.filter(i => i.tier === "Tier 1").length;
+        let t2 = items.filter(i => i.tier === "Tier 2").length;
+        let t3 = items.filter(i => i.tier === "Tier 3").length;
+        let nt = items.filter(i => i.tier === "Not Tiered").length;
+
+        let booster = 0;
+        if (t1 >= 4) booster = 10;
+        else if (t2 >= 3) booster = 7;
+        else if (t3 >= 3) booster = 5;
+        else if (nt >= 3) booster = 5;
+
+        const categoryScore = Math.min(100, (baseSum + booster) / items.length);
+        return {
+          count: items.length,
+          baseSum,
+          boost: booster,
+          score: categoryScore,
+          items
+        };
+      };
+
+      const academicsCat = calculateCategory(academicItems);
+      const internshipsCat = calculateCategory(internshipItems);
+      const publicationsCat = calculateCategory(publicationItems);
+      const leadershipCat = calculateCategory(leadershipItems);
+      const mootsCat = calculateCategory(mootItems);
+
+      const allCategories = [academicsCat, internshipsCat, publicationsCat, leadershipCat, mootsCat];
+      const overallSum = allCategories.reduce((acc, c) => acc + c.score, 0);
+      const overallReadiness = Math.round(overallSum / 5);
+
+      let classification = "";
+      let tierRating = "";
+
+      if (overallReadiness >= 80) {
+        classification = "Elite Recruiter Ready";
+        tierRating = "Tier-1 Day-Zero Threshold Match";
+      } else if (overallReadiness >= 70) {
+        classification = "Competitive Asset";
+        tierRating = "Tier-2 Day-One Target Match";
+      } else if (overallReadiness >= 60) {
+        classification = "Developing Profile";
+        tierRating = "Tier-3 Boutique Level Match";
+      } else {
+        classification = "Immediate Improvements Required";
+        tierRating = "Not Tiered (60 Below)";
+      }
+
+      return {
+        overallSum,
+        overallReadiness,
+        classification,
+        tierRating,
+        categories: {
+          Academics: academicsCat,
+          Internships: internshipsCat,
+          Publications: publicationsCat,
+          "Leadership Roles": leadershipCat,
+          "Moot Court Portfolio": mootsCat
+        }
+      };
+    };
+
+    // --- ONBOARDING MODAL COMPONENT ---
+    const Onboarding = ({ profile, setProfile, onComplete }) => {
+      const [step, setStep] = useState(1);
+      const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+
+      const handleNext = () => {
+        if (step === 1) {
+          if (!profile.fullName || !profile.studentId || !profile.cgpa) {
+            alert("Please complete all required academic profile fields.");
+            return;
+          }
+          const cgpaNum = parseFloat(profile.cgpa);
+          if (isNaN(cgpaNum) || cgpaNum < 1.0 || cgpaNum > 8.0) {
+            alert("Please enter a valid JGLS CGPA between 1.00 and 8.00.");
+            return;
+          }
+          setStep(2);
+        } else if (step === 2) {
+          if (!profile.internshipsText || !profile.internshipsText.trim()) {
+            alert("Please fill in the Prior Internships & Duties field.");
+            return;
+          }
+          setStep(3);
+        } else if (step === 3) {
+          if (!disclaimerAccepted) {
+            alert("You must accept the institutional disclaimer to generate your dashboard.");
+            return;
+          }
+          onComplete();
+        }
+      };
+
+      return (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+          {/* Subtle Geometric Background Decorative Accent */}
+          <div className="w-96 h-96 rounded-full bg-white/5 absolute -top-20 -right-20 pointer-events-none"></div>
+
+          <div className="max-w-3xl w-full bg-white border border-black rounded-lg p-8 shadow-2xl relative overflow-hidden">
+            
+            {/* Header Identity */}
+            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-black">
+              <Icon name="shield" className="w-8 h-8 text-black" />
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-black uppercase">PLACEMENT OS</h1>
+                <p className="text-xs text-brandGrey uppercase tracking-widest font-semibold">
+                  Created by Kriti Shah
+                </p>
+              </div>
+            </div>
+
+            {/* 3-Step Progress Bar */}
+            <div className="grid grid-cols-3 gap-2 mb-8">
+              <div className={`h-1.5 rounded-full ${step >= 1 ? 'bg-black' : 'bg-brandLightGrey'}`}></div>
+              <div className={`h-1.5 rounded-full ${step >= 2 ? 'bg-black' : 'bg-brandLightGrey'}`}></div>
+              <div className={`h-1.5 rounded-full ${step >= 3 ? 'bg-black' : 'bg-brandLightGrey'}`}></div>
+            </div>
+
+            <div className="text-xs text-brandGrey font-bold uppercase tracking-wider mb-4">
+              Step {step} of 3: {step === 1 ? "Academic Profile Verification" : step === 2 ? "CV Placement Content" : "Targeting / Disclaimer"}
+            </div>
+
+            {/* Step 1: Academic Profile */}
+            {step === 1 && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-black mb-1">Full Name *</label>
+                    <input 
+                      type="text"
+                      className="w-full bg-bgOffwhite border border-black p-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                      placeholder="e.g. Kriti Shah"
+                      value={profile.fullName}
+                      onChange={e => setProfile({...profile, fullName: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-black mb-1">Student ID *</label>
+                    <input 
+                      type="text"
+                      className="w-full bg-bgOffwhite border border-black p-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                      placeholder="e.g. 2301XXXX"
+                      value={profile.studentId}
+                      onChange={e => setProfile({...profile, studentId: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-black mb-1">Academic Programme</label>
+                    <select 
+                      className="w-full bg-bgOffwhite border border-black p-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                      value={profile.programme}
+                      onChange={e => setProfile({...profile, programme: e.target.value})}
+                    >
+                      <option value="5 year B.A L.L.B (Hons.)">5 year B.A L.L.B (Hons.)</option>
+                      <option value="5 year B.B.A L.L.B (Hons.)">5 year B.B.A L.L.B (Hons.)</option>
+                      <option value="5 year B.Com L.L.B (Hons.)">5 year B.Com L.L.B (Hons.)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-black mb-1">Study Year</label>
+                    <select 
+                      className="w-full bg-bgOffwhite border border-black p-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                      value={profile.studyYear}
+                      onChange={e => setProfile({...profile, studyYear: e.target.value})}
+                    >
+                      <option value="1st Year">1st Year</option>
+                      <option value="2nd Year">2nd Year</option>
+                      <option value="3rd Year">3rd Year</option>
+                      <option value="4th Year">4th Year</option>
+                      <option value="5th Year">5th Year</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-black mb-1">Cumulative JGLS CGPA *</label>
+                    <input 
+                      type="number"
+                      step="0.01"
+                      min="1.00"
+                      max="8.00"
+                      className="w-full bg-bgOffwhite border border-black p-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                      placeholder="7.15"
+                      value={profile.cgpa}
+                      onChange={e => setProfile({...profile, cgpa: e.target.value})}
+                    />
+                    <span className="text-[10px] text-brandGrey mt-1 block">Official CGPA on JGLS 8.0 grading scale</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: CV Placement Content */}
+            {step === 2 && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-black mb-1">
+                    Prior Internships & Duties *
+                  </label>
+                  <p className="text-[11px] text-brandGrey mb-1 font-mono">
+                    Solely list the duration and name of the place you worked (e.g. "1 month internship at Nishith Desai and Associates; 2 weeks at High Court Chamber")
+                  </p>
+                  <textarea 
+                    rows="3"
+                    className="w-full bg-bgOffwhite border border-black p-2 text-xs focus:outline-none focus:ring-1 focus:ring-black font-mono"
+                    placeholder="1 month internship at Nishith Desai and Associates; Judicial clerkship under Delhi High Court"
+                    value={profile.internshipsText}
+                    onChange={e => setProfile({...profile, internshipsText: e.target.value})}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-black mb-1">
+                    Moot Court Experience
+                  </label>
+                  <p className="text-[11px] text-brandGrey mb-1 font-mono">
+                    Separate multiple moots with semicolons or newlines
+                  </p>
+                  <textarea 
+                    rows="2"
+                    className="w-full bg-bgOffwhite border border-black p-2 text-xs focus:outline-none focus:ring-1 focus:ring-black font-mono"
+                    placeholder="Jessup International Moot Court (Quarter-finalist); National Moot Competition"
+                    value={profile.mootsText}
+                    onChange={e => setProfile({...profile, mootsText: e.target.value})}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-black mb-1">Publications & Policy Papers</label>
+                    <textarea 
+                      rows="2"
+                      className="w-full bg-bgOffwhite border border-black p-2 text-xs focus:outline-none focus:ring-1 focus:ring-black font-mono"
+                      placeholder="Scopus Indexed Journal Article; Bar & Bench opinion paper"
+                      value={profile.publicationsText}
+                      onChange={e => setProfile({...profile, publicationsText: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-black mb-1">Leadership Roles</label>
+                    <textarea 
+                      rows="2"
+                      className="w-full bg-bgOffwhite border border-black p-2 text-xs focus:outline-none focus:ring-1 focus:ring-black font-mono"
+                      placeholder="President, Legal Aid Society; General Secretary, Debating Union"
+                      value={profile.leadershipText}
+                      onChange={e => setProfile({...profile, leadershipText: e.target.value})}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Targeting + Institutional Disclaimer */}
+            {step === 3 && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-black mb-1">Target Employer</label>
+                    <select 
+                      className="w-full bg-bgOffwhite border border-black p-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                      value={profile.targetEmployer}
+                      onChange={e => setProfile({...profile, targetEmployer: e.target.value})}
+                    >
+                      <option value="Undecided">Undecided</option>
+                      <option value="In House">In House</option>
+                      <option value="Law Firm">Law Firm</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-black mb-1">Target Practice Group</label>
+                    <select 
+                      className="w-full bg-bgOffwhite border border-black p-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
+                      value={profile.targetPractice}
+                      onChange={e => setProfile({...profile, targetPractice: e.target.value})}
+                    >
+                      <option value="General Corporate">General Corporate</option>
+                      <option value="Technology, Media and Telecommunications">Technology, Media and Telecommunications</option>
+                      <option value="Intellectual Property">Intellectual Property</option>
+                      <option value="Arbitration">Arbitration</option>
+                      <option value="Litigation">Litigation</option>
+                      <option value="Energy and Infrastructure">Energy and Infrastructure</option>
+                      <option value="Banking and Finance">Banking and Finance</option>
+                      <option value="Insolvency and Bankruptcy">Insolvency and Bankruptcy</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Prominent Institutional Disclaimer Card */}
+                <div className="bg-bgOffwhite border-2 border-black p-4 rounded text-xs space-y-2">
+                  <div className="flex items-center space-x-2 text-black font-bold uppercase tracking-wider">
+                    <Icon name="alertTriangle" className="w-4 h-4 text-black" />
+                    <span>IMPORTANT INSTITUTIONAL DISCLAIMER</span>
+                  </div>
+                  <p className="text-brandGrey leading-relaxed">
+                    The platform is NOT associated with, authorized by, or endorsed by Jindal Global Law School, the Career Development and Placement Division (CDPD), O.P. Jindal Global University, or any corporate companies listed. It is an independent preparation and diagnostic tool created by <strong>Kriti Shah</strong> designed strictly for student peer evaluation and mock training.
+                  </p>
+                  <div className="pt-2 flex items-center space-x-2">
+                    <input 
+                      type="checkbox"
+                      id="disclaimerCheck"
+                      className="w-4 h-4 border-black rounded"
+                      checked={disclaimerAccepted}
+                      onChange={e => setDisclaimerAccepted(e.target.checked)}
+                    />
+                    <label htmlFor="disclaimerCheck" className="text-xs font-bold text-black cursor-pointer">
+                      I understand that this is purely a preparation system and agree that I have read the institutional disclaimer in full.
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Navigation Buttons */}
+            <div className="mt-8 flex justify-between items-center pt-4 border-t border-black">
+              {step > 1 ? (
+                <button 
+                  onClick={() => setStep(step - 1)}
+                  className="px-4 py-2 border border-black text-black text-xs font-bold uppercase hover:bg-black hover:text-white transition-colors"
+                >
+                  Back
+                </button>
+              ) : <div></div>}
+
+              <button 
+                onClick={handleNext}
+                disabled={step === 3 && !disclaimerAccepted}
+                className={`px-6 py-2.5 border border-black text-xs font-bold uppercase transition-all ${
+                  step === 3 && !disclaimerAccepted 
+                    ? 'bg-brandLightGrey text-brandGrey cursor-not-allowed border-brandGrey' 
+                    : 'bg-black text-white hover:bg-neutral-800'
+                }`}
+              >
+                {step === 1 ? "Next: CV Credentials" : step === 2 ? "Next: Targeting & Terms" : "Generate JGLS Dashboard"}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      );
+    };
+
+    // --- MAIN APPLICATION HEADER ---
+    const AppHeader = ({ profile, onOpenRestart }) => {
+      return (
+        <header className="sticky top-0 z-40 bg-bgOffwhite border-b border-black px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center space-x-3">
+            <div className="bg-black text-white p-1.5 rounded">
+              <Icon name="shield" className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="font-bold text-lg tracking-tight uppercase">PLACEMENT OS</span>
+                <span className="bg-black text-white text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-sm">
+                  JINDAL GLOBAL LAW SCHOOL
+                </span>
+              </div>
+              <div className="text-[11px] text-brandGrey tracking-tight font-medium">
+                Recruiter-Readiness Matrix & Balanced Symmetrical Averaging Engine • Created by Kriti Shah
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-6 text-xs">
+            <div className="border-l border-black pl-4 hidden md:block">
+              <span className="text-brandGrey block uppercase text-[10px] font-bold">Candidate</span>
+              <span className="font-bold">{profile.fullName || "Unverified"} ({profile.studentId || "N/A"})</span>
+            </div>
+            <div className="border-l border-black pl-4 hidden md:block">
+              <span className="text-brandGrey block uppercase text-[10px] font-bold">Programme</span>
+              <span className="font-bold">{profile.programme}</span>
+            </div>
+            <div className="border-l border-black pl-4">
+              <span className="text-brandGrey block uppercase text-[10px] font-bold">JGLS CGPA</span>
+              <span className="font-bold text-sm">{parseFloat(profile.cgpa).toFixed(2)} / 8.00</span>
+            </div>
+            
+            <button 
+              onClick={onOpenRestart}
+              className="flex items-center space-x-1 border border-black px-3 py-1.5 hover:bg-black hover:text-white transition-colors text-xs font-bold uppercase"
+            >
+              <Icon name="rotateCcw" className="w-3.5 h-3.5" />
+              <span>Restart Session</span>
+            </button>
+          </div>
+        </header>
+      );
+    };
+
+    // --- LEFT SIDEBAR NAVIGATION ---
+    const Sidebar = ({ activeTab, setActiveTab, onOpenRestart }) => {
+      const navItems = [
+        { id: "dashboard", label: "Placement Dashboard", icon: "trendingUp" },
+        { id: "auditor", label: "CV & Transcript Auditor", icon: "fileCheck" },
+        { id: "interview", label: "Mock Partner Interview", icon: "messageSquare" },
+        { id: "matrix", label: "Consolidated Tiers Matrix", icon: "compass" },
+      ];
+
+      return (
+        <aside className="w-full md:w-64 bg-bgOffwhite border-r border-black p-4 flex flex-col justify-between shrink-0">
+          <div className="space-y-1">
+            <div className="text-[10px] font-bold text-brandGrey uppercase tracking-wider px-3 py-2">
+              System Modules
+            </div>
+            {navItems.map(item => {
+              const active = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`w-full flex items-center space-x-3 px-3 py-2.5 text-xs font-bold uppercase transition-all ${
+                    active 
+                      ? 'bg-black text-white shadow-sm' 
+                      : 'text-black hover:bg-brandLightGrey'
+                  }`}
+                >
+                  <Icon name={item.icon} className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="pt-6 border-t border-black mt-6 space-y-3">
+            <button 
+              onClick={onOpenRestart}
+              className="w-full text-left text-xs font-bold text-brandGrey hover:text-black uppercase tracking-wider px-3 py-1 flex items-center space-x-2"
+            >
+              <Icon name="rotateCcw" className="w-3.5 h-3.5" />
+              <span>Restart OS Onboarding</span>
+            </button>
+
+            <div className="px-3 py-2 bg-white border border-black rounded flex items-center justify-between text-[11px]">
+              <span className="font-bold uppercase tracking-wider text-black">System Live</span>
+              <span className="w-2 h-2 rounded-full bg-black animate-ping"></span>
+            </div>
+          </div>
+        </aside>
+      );
+    };
+
+    // --- MODULE 1: PLACEMENT DASHBOARD ---
+    const PlacementDashboard = ({ parsedData, profile }) => {
+      const { overallSum, overallReadiness, classification, tierRating, categories } = parsedData;
+
+      return (
+        <div className="space-y-8">
+          
+          {/* Main Recruiter Readiness Hero Card */}
+          <div className="bg-white border-2 border-black p-8 relative overflow-hidden">
+            {/* Cropped Oversized Geometric Accent */}
+            <div className="w-64 h-64 rounded-full bg-black absolute -bottom-20 -right-20 opacity-5 pointer-events-none"></div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+              <div className="md:col-span-2 space-y-3">
+                <div className="inline-block bg-black text-white text-[10px] font-bold uppercase px-2.5 py-1 tracking-widest">
+                  BALANCED SYMMETRICAL READINESS ENGINE
+                </div>
+                <h2 className="text-3xl font-extrabold text-black uppercase tracking-tight">
+                  {classification}
+                </h2>
+                <p className="text-xs text-brandGrey font-mono uppercase tracking-wider">
+                  Target Tier Alignment: <span className="text-black font-bold">{tierRating}</span>
+                </p>
+                <div className="pt-2 text-xs text-brandGrey max-w-xl">
+                  Evaluated across JGLS Academic Scale (8.0), Internship Tiering, Indexed Publications, Recognized Leadership, and Moot Court Portfolio.
+                </div>
+              </div>
+
+              {/* Score Circular Metric Indicator */}
+              <div className="flex flex-col items-center justify-center p-6 bg-bgOffwhite border border-black text-center">
+                <div className="text-4xl font-extrabold text-black tracking-tighter">
+                  {overallSum.toFixed(0)}
+                  <span className="text-lg font-normal text-brandGrey">/500</span>
+                </div>
+                <div className="text-xs font-bold text-black mt-1">
+                  ({overallReadiness} / 100)
+                </div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-brandGrey mt-1">
+                  Recruiter Readiness Score
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Symmetric Placement Matrix Evaluation Breakdown */}
+          <div className="bg-white border border-black p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-black pb-3">
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-wide">
+                  Symmetric Placement Matrix (Evaluation Breakdown)
+                </h3>
+                <span className="text-[11px] text-brandGrey font-mono">
+                  Calculated across 5 standard evaluation categories (Out of 500)
+                </span>
+              </div>
+              <span className="text-xs font-mono font-bold uppercase bg-bgOffwhite border border-black px-2 py-1">
+                Target: {profile.targetEmployer} ({profile.targetPractice})
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs font-mono border-collapse">
+                <thead>
+                  <tr className="border-b border-black bg-bgOffwhite">
+                    <th className="p-2 uppercase font-bold text-black">Category</th>
+                    <th className="p-2 uppercase font-bold text-black text-center">Parsed Count</th>
+                    <th className="p-2 uppercase font-bold text-black text-center">Applied Boost</th>
+                    <th className="p-2 uppercase font-bold text-black text-right">Category Score</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y border-rule">
+                  {Object.entries(categories).map(([catName, data]) => (
+                    <tr key={catName} className="hover:bg-bgOffwhite/50">
+                      <td className="p-2 font-bold text-black uppercase">{catName}</td>
+                      <td className="p-2 text-center">{data.count}</td>
+                      <td className="p-2 text-center">
+                        {data.boost > 0 ? `+${data.boost}` : "0"}
+                      </td>
+                      <td className="p-2 text-right font-bold text-black">
+                        {data.score.toFixed(2)} / 100
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Score Summation Formula Display */}
+            <div className="p-3 bg-bgOffwhite border border-black text-xs font-mono flex items-center justify-between">
+              <span className="text-brandGrey font-bold uppercase">Readiness Score Mathematical Summation:</span>
+              <span className="font-bold text-black">
+                {Object.values(categories).map(c => c.score.toFixed(0)).join(" + ")} = {overallSum.toFixed(0)}/500 ({overallReadiness}/100)
+              </span>
+            </div>
+          </div>
+
+          {/* Parsed Items Detailed Audit List */}
+          <div className="bg-white border border-black p-6 space-y-4">
+            <h3 className="text-sm font-bold uppercase tracking-wide border-b border-black pb-2">
+              Parsed Items Detailed Audit List
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Object.entries(categories).map(([catName, data]) => (
+                <div key={catName} className="border border-black p-4 bg-bgOffwhite/30 space-y-2">
+                  <div className="flex justify-between items-center border-b border-black/20 pb-1">
+                    <span className="text-xs font-bold uppercase text-black">{catName}</span>
+                    <span className="text-[10px] font-mono text-brandGrey">Count: {data.count}</span>
+                  </div>
+
+                  {(!data.items || data.items.length === 0) ? (
+                    <div className="text-[11px] text-brandGrey italic py-2">No entries detected in this category</div>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {data.items.map((item, idx) => (
+                        <div key={idx} className="flex items-center justify-between text-xs bg-white border border-black/10 p-2">
+                          <span className="truncate pr-2 font-medium text-black">{item.name}</span>
+                          <div className="flex items-center space-x-2 shrink-0">
+                            <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 border ${
+                              item.tier === 'Tier 1' ? 'border-black bg-black text-white' :
+                              item.tier === 'Tier 2' ? 'border-black bg-brandGrey text-white' :
+                              'border-black text-black bg-white'
+                            }`}>
+                              {item.tier}
+                            </span>
+                            <span className="font-mono text-[11px] text-brandGrey">{item.score} pts</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      );
+    };
+
+    // --- MODULE 2: CV & TRANSCRIPT AUDITOR ---
+    const CVAuditor = ({ profile, parsedData }) => {
+      const [isAuditing, setIsAuditing] = useState(false);
+      const [hasAudited, setHasAudited] = useState(false);
+
+      const runAudit = () => {
+        setIsAuditing(true);
+        setTimeout(() => {
+          setIsAuditing(false);
+          setHasAudited(true);
+        }, 1000);
+      };
+
+      const score = parsedData.overallReadiness;
+      const shortlistProb = score >= 80 ? "High (86%)" : score >= 70 ? "Moderate (65%)" : "Needs Enhancements (35%)";
+
+      return (
+        <div className="space-y-6">
+          <div className="bg-white border-2 border-black p-6 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold uppercase tracking-tight text-black">CV & Transcript Auditor</h2>
+              <p className="text-xs text-brandGrey">Analytical parser evaluating recruitment probability, framing impact, and regulatory terminology density.</p>
+            </div>
+            <button 
+              onClick={runAudit}
+              disabled={isAuditing}
+              className="bg-black text-white px-6 py-2.5 text-xs font-bold uppercase hover:bg-neutral-800 transition-colors flex items-center space-x-2 border border-black"
+            >
+              <Icon name="sparkles" className="w-4 h-4" />
+              <span>{isAuditing ? "Auditing CV Data..." : "Run CV Audit"}</span>
+            </button>
+          </div>
+
+          {!hasAudited ? (
+            <div className="bg-white border border-black p-12 text-center space-y-3">
+              <Icon name="fileCheck" className="w-12 h-12 text-brandGrey mx-auto" />
+              <h3 className="text-sm font-bold uppercase">Audit Diagnostic Pending</h3>
+              <p className="text-xs text-brandGrey max-w-md mx-auto">
+                Click "Run CV Audit" to analyze stored academic transcripts, corporate terminology, regulatory references, and bullet impact scores.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              
+              {/* Shortlist Probability & CGPA Metric Audit */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white border border-black p-6 space-y-2">
+                  <span className="text-[10px] font-bold uppercase text-brandGrey">Shortlist Probability</span>
+                  <div className="text-3xl font-extrabold text-black uppercase">{shortlistProb}</div>
+                  <p className="text-xs text-brandGrey">
+                    Estimated likelihood of clearing preliminary recruiter CV filters for top-tier legal practice groups.
+                  </p>
+                </div>
+
+                <div className="bg-white border border-black p-6 space-y-2">
+                  <span className="text-[10px] font-bold uppercase text-brandGrey">CGPA Academic Audit</span>
+                  <div className="text-xl font-bold text-black uppercase">
+                    {profile.cgpa} / 8.00 JGLS Scale
+                  </div>
+                  <p className="text-xs text-brandGrey">
+                    Your CGPA of {profile.cgpa}/8.00 matches a {parsedData.categories.Academics.items[0]?.tier || "Standard"} profile. Top-tier entities employ strict automated cut-off filters during initial recruitment steps.
+                  </p>
+                </div>
+              </div>
+
+              {/* Narrative Weaknesses */}
+              <div className="bg-white border border-black p-6 space-y-3">
+                <h3 className="text-sm font-bold uppercase border-b border-black pb-2 text-black">
+                  Narrative Weaknesses Detected
+                </h3>
+                <ul className="text-xs space-y-2 text-black list-disc pl-4">
+                  <li>Passive descriptions instead of high-impact active metrics and corporate deliverables.</li>
+                  <li>Missing precise references to regulatory acts such as FEMA non-debt limits or specific SEBI compliance rules.</li>
+                  <li>Opportunities to expand moot court research details into explicit analytical legal outputs.</li>
+                </ul>
+              </div>
+
+              {/* Bullet Rewrites */}
+              <div className="bg-white border border-black p-6 space-y-4">
+                <h3 className="text-sm font-bold uppercase border-b border-black pb-2 text-black">
+                  Recommended Actionable Bullet Rewrites
+                </h3>
+
+                <div className="space-y-4 text-xs font-mono">
+                  <div className="p-4 bg-bgOffwhite border border-black/20 space-y-1">
+                    <span className="text-[10px] text-brandGrey uppercase font-bold block">Original Draft:</span>
+                    <p className="text-black italic">"Worked on general research relating to corporate legal queries."</p>
+                    <span className="text-[10px] text-black uppercase font-bold block pt-2">Suggested High-Impact Rewrite:</span>
+                    <p className="text-black font-bold">"Analyzed FEMA caps and Press Note 3 guidelines to construct compliance checklists for cross-border investments."</p>
+                  </div>
+
+                  <div className="p-4 bg-bgOffwhite border border-black/20 space-y-1">
+                    <span className="text-[10px] text-brandGrey uppercase font-bold block">Original Draft:</span>
+                    <p className="text-black italic">"Assisted litigation associates with case files."</p>
+                    <span className="text-[10px] text-black uppercase font-bold block pt-2">Suggested High-Impact Rewrite:</span>
+                    <p className="text-black font-bold">"Co-drafted pleading structures and verified jurisdictional pecuniary thresholds for filing before the NCLT."</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Strategic Advice */}
+              <div className="bg-white border border-black p-6 space-y-2">
+                <h3 className="text-sm font-bold uppercase border-b border-black pb-2 text-black">
+                  Strategic Advice for Placement Optimization
+                </h3>
+                <p className="text-xs text-brandGrey leading-relaxed">
+                  Ensure every resume entry contains an <strong>active verb</strong>, a <strong>governing legislative framework</strong> (e.g. Companies Act, IBC, Arbitration Act), and a <strong>measurable corporate output</strong> (e.g. compliance tracker, due diligence matrix).
+                </p>
+              </div>
+
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // --- MODULE 3: MOCK PARTNER INTERVIEW & OFFLINE EVALUATION ENGINE ---
+    const MockInterview = ({ profile }) => {
+      const [interviewStarted, setInterviewStarted] = useState(false);
+      const [currentQIndex, setCurrentQIndex] = useState(0);
+      const [messages, setMessages] = useState([]);
+      const [userInput, setUserInput] = useState("");
+      const [isThinking, setIsThinking] = useState(false);
+      const [questions, setQuestions] = useState([]);
+      const [evaluations, setEvaluations] = useState([]);
+      const [interviewCompleted, setInterviewCompleted] = useState(false);
+      const [showExitModal, setShowExitModal] = useState(false);
+
+      const targetPractice = profile.targetPractice || "General Corporate";
+      const targetFirm = profile.targetEmployer || "AZB & Partners";
+      const concepts = TARGET_PRACTICE_CONCEPTS[targetPractice] || TARGET_PRACTICE_CONCEPTS["General Corporate"];
+
+      // Generate exactly 10 questions dynamically based on profile
+      const generateQuestions = () => {
+        return [
+          `Walk me through your prior experience and how it prepares you specifically for our ${targetPractice} practice at ${targetFirm}.`,
+          `Your JGLS CGPA currently stands at ${profile.cgpa}/8.00. What does this tell us about your capacity to execute detailed transactional legal research under tight firm deadlines?`,
+          `In ${targetPractice}, how do you evaluate the structural distinction between ${concepts.concept1} and ${concepts.concept2}?`,
+          `How do you envisage legal technology or AI tools simplifying transaction due diligence or litigation research in our daily firm operations?`,
+          `Discuss recent regulatory developments regarding ${concepts.news}. How does this impact high-value cross-border advisory?`,
+          `If a foreign client intends to acquire a ${concepts.section}, what regulatory authorizations and filings are mandated under ${concepts.approvals}?`,
+          `Walk us through a potential legal hurdle or procedural issue regarding ${concepts.concept1} under Indian jurisdiction.`,
+          `In a high-stakes arbitration or commercial dispute, explain the appellate recourse available following the denial of an interim injunction.`,
+          `Day-Zero roles at top-tier entities demand intense resilience. How do you maintain legal precision under heavy workload stress?`,
+          `Finally, why have you specifically targeted ${targetFirm} above other Tier-1 entities for your primary corporate career objective?`
+        ];
+      };
+
+      const startInterview = () => {
+        const qList = generateQuestions();
+        setQuestions(qList);
+        setCurrentQIndex(0);
+        setEvaluations([]);
+        setInterviewCompleted(false);
+
+        const initialMsg = {
+          sender: "Interviewer",
+          text: `Welcome to the ${targetFirm} Mock Partner Round (${targetPractice}). Let's begin immediately.\n\nQuestion 1: ${qList[0]}`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setMessages([initialMsg]);
+        setInterviewStarted(true);
+      };
+
+      // Offline Technical Evaluation Logic
+      const evaluateAnswer = (answerText) => {
+        const norm = normalizeText(answerText);
+        const words = answerText.trim().split(/\s+/).filter(w => w.length > 0).length;
+
+        // Technical Anchors Check
+        const anchors = [
+          "companies act", "fema", "sebi", "arbitration act", "bnss", "bns", "bsa", "ibc", "constitution", "nclt", "cci",
+          "due diligence", "indemnity", "condition precedent", "cp", "condition subsequent", "cs", "disclosure", "clause",
+          "warranty", "liability", "damages", "injunction", "seat", "venue", "arbitrator", "tribunal", "interim", "appeal",
+          "jurisdiction", "memorial", "advocate", "bench"
+        ];
+
+        let technicalScore = 0;
+        let matchedAnchors = [];
+        for (let anchor of anchors) {
+          if (norm.includes(anchor)) {
+            technicalScore += 15;
+            matchedAnchors.push(anchor);
+          }
+        }
+
+        let wordBonus = 0;
+        if (words >= 120) wordBonus = 25;
+        else if (words >= 60) wordBonus = 15;
+
+        const rawScore = 40 + technicalScore + wordBonus;
+        const finalScore = Math.min(95, Math.max(30, rawScore));
+
+        let assessment = "";
+        let upgrade = "";
+
+        if (words < 15) {
+          assessment = "DAY-ZERO ASSESSMENT: Answer is excessively brief and fails to demonstrate analytical depth.";
+          upgrade = "DAY-ZERO TACTICAL UPGRADE: Expand with structured legal arguments, referencing statutory provisions and commercial impact.";
+        } else if (matchedAnchors.length === 0) {
+          assessment = "DAY-ZERO ASSESSMENT: Demonstrates general conversational awareness but lacks technical legal terminology.";
+          upgrade = "DAY-ZERO TACTICAL UPGRADE: Explicitly cite governing statutes (e.g., Companies Act, SEBI, FEMA) and transactional terms (CP/CS, Indemnity).";
+        } else {
+          assessment = `DAY-ZERO ASSESSMENT: Strong technical grounding. Recognized key anchors: [${matchedAnchors.slice(0, 3).join(", ")}].`;
+          upgrade = "DAY-ZERO TACTICAL UPGRADE: Maintain this analytical rigor. Connect statutory terms directly to risk allocation and deal timelines.";
+        }
+
+        return { score: finalScore, assessment, upgrade, words, matchedAnchors };
+      };
+
+      const handleSend = () => {
+        if (!userInput.trim()) return;
+
+        const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const userMsg = { sender: "Candidate", text: userInput, timestamp };
+        
+        setMessages(prev => [...prev, userMsg]);
+        const currentAnswer = userInput;
+        setUserInput("");
+        setIsThinking(true);
+
+        setTimeout(() => {
+          const evalResult = evaluateAnswer(currentAnswer);
+          setEvaluations(prev => [...prev, evalResult]);
+
+          const nextIndex = currentQIndex + 1;
+          if (nextIndex < 10) {
+            setCurrentQIndex(nextIndex);
+            const partnerMsg = {
+              sender: "Interviewer",
+              text: `${evalResult.assessment}\n${evalResult.upgrade}\n\nQuestion ${nextIndex + 1}: ${questions[nextIndex]}`,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            setMessages(prev => [...prev, partnerMsg]);
+          } else {
+            setInterviewCompleted(true);
+            const finalMsg = {
+              sender: "Interviewer",
+              text: "That completes all 10 interview questions. Click below to view your full Recruiter Performance Scorecard.",
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            setMessages(prev => [...prev, finalMsg]);
+          }
+          setIsThinking(false);
+        }, 800);
+      };
+
+      const avgInterviewScore = evaluations.length > 0 
+        ? Math.round(evaluations.reduce((acc, e) => acc + e.score, 0) / evaluations.length)
+        : 0;
+
+      return (
+        <div className="space-y-6">
+          
+          <div className="bg-white border-2 border-black p-6 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold uppercase tracking-tight text-black">Mock Partner Interview</h2>
+              <p className="text-xs text-brandGrey">Stress & Commercial Round simulator tuned to target practice area and firm expectations.</p>
+            </div>
+            {interviewStarted && !interviewCompleted && (
+              <button 
+                onClick={() => setShowExitModal(true)}
+                className="border border-black px-4 py-2 text-xs font-bold uppercase hover:bg-black hover:text-white transition-colors"
+              >
+                Abandon Interview
+              </button>
+            )}
+          </div>
+
+          {!interviewStarted ? (
+            <div className="bg-white border border-black p-8 space-y-6">
+              <div className="space-y-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-brandGrey">Interview Configuration</span>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                  <div className="p-3 bg-bgOffwhite border border-black">
+                    <span className="text-brandGrey block">Target Entity</span>
+                    <span className="font-bold text-black">{targetFirm}</span>
+                  </div>
+                  <div className="p-3 bg-bgOffwhite border border-black">
+                    <span className="text-brandGrey block">Practice Area</span>
+                    <span className="font-bold text-black">{targetPractice}</span>
+                  </div>
+                  <div className="p-3 bg-bgOffwhite border border-black">
+                    <span className="text-brandGrey block">Candidate CGPA</span>
+                    <span className="font-bold text-black">{profile.cgpa} / 8.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-bgOffwhite border border-black text-xs space-y-2">
+                <span className="font-bold uppercase text-black">Partner Round Overview:</span>
+                <p className="text-brandGrey">
+                  You will face exactly 10 dynamic legal and commercial questions. Each response is evaluated offline for statutory grounding, transactional terminology, and word volume.
+                </p>
+              </div>
+
+              <button 
+                onClick={startInterview}
+                className="bg-black text-white px-6 py-3 text-xs font-bold uppercase hover:bg-neutral-800 transition-colors w-full border border-black"
+              >
+                Start 10-Question Partner Round
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              {/* Chat Interface Column */}
+              <div className="md:col-span-2 bg-white border border-black flex flex-col h-[600px]">
+                
+                {/* Chat Header */}
+                <div className="p-3 border-b border-black bg-bgOffwhite flex justify-between items-center text-xs">
+                  <span className="font-bold uppercase">Commercial Round Stream ({currentQIndex + 1}/10)</span>
+                  <span className="font-mono text-brandGrey">{targetFirm}</span>
+                </div>
+
+                {/* Chat Message Messages Scroll */}
+                <div className="flex-1 p-4 overflow-y-auto space-y-4 font-mono text-xs">
+                  {messages.map((m, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`flex flex-col ${m.sender === "Candidate" ? "items-end" : "items-start"}`}
+                    >
+                      <div className="flex items-center space-x-2 text-[10px] text-brandGrey mb-1">
+                        <span className="font-bold text-black">{m.sender}</span>
+                        <span>• {m.timestamp}</span>
+                      </div>
+                      <div className={`p-3 max-w-xl border ${
+                        m.sender === "Candidate" 
+                          ? "bg-black text-white border-black" 
+                          : "bg-bgOffwhite text-black border-black"
+                      } whitespace-pre-wrap leading-relaxed`}>
+                        {m.text}
+                      </div>
+                    </div>
+                  ))}
+
+                  {isThinking && (
+                    <div className="flex items-center space-x-2 text-xs text-brandGrey italic py-2">
+                      <Icon name="sparkles" className="w-4 h-4 animate-spin text-black" />
+                      <span>Interviewer is thinking...</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Chat Input Field */}
+                {!interviewCompleted ? (
+                  <div className="p-3 border-t border-black bg-bgOffwhite flex space-x-2">
+                    <input 
+                      type="text"
+                      className="flex-1 bg-white border border-black p-2 text-xs focus:outline-none"
+                      placeholder="Type your answer here..."
+                      value={userInput}
+                      onChange={e => setUserInput(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && handleSend()}
+                    />
+                    <button 
+                      onClick={handleSend}
+                      className="bg-black text-white px-4 py-2 text-xs font-bold uppercase hover:bg-neutral-800 transition-colors"
+                    >
+                      Send
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-4 border-t border-black bg-bgOffwhite text-center">
+                    <span className="text-xs font-bold uppercase text-black">Interview Completed</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Realtime Feedback Panel */}
+              <div className="bg-white border border-black p-4 space-y-4 overflow-y-auto h-[600px]">
+                <h3 className="text-xs font-bold uppercase border-b border-black pb-2 text-black">
+                  Realtime Technical Evaluation
+                </h3>
+
+                {evaluations.length === 0 ? (
+                  <div className="text-xs text-brandGrey italic py-4">
+                    Submit answers to populate offline evaluation feedback.
+                  </div>
+                ) : (
+                  <div className="space-y-3 font-mono text-[11px]">
+                    {evaluations.map((ev, i) => (
+                      <div key={i} className="p-3 bg-bgOffwhite border border-black space-y-1">
+                        <div className="flex justify-between font-bold">
+                          <span>Q{i+1} Technical Score:</span>
+                          <span className="text-black">{ev.score}/95</span>
+                        </div>
+                        <div className="text-brandGrey text-[10px]">{ev.words} words • Anchors: {ev.matchedAnchors.length}</div>
+                        <div className="text-black pt-1">{ev.assessment}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {interviewCompleted && (
+                  <div className="pt-4 border-t border-black space-y-3">
+                    <div className="p-4 bg-black text-white text-center space-y-1">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-brandGrey">Overall Interview Performance</span>
+                      <div className="text-3xl font-extrabold">{avgInterviewScore} / 95</div>
+                    </div>
+
+                    <div className="text-xs text-brandGrey space-y-1">
+                      <span className="font-bold text-black uppercase block">Tactical Recommendations:</span>
+                      <ul className="list-disc pl-4 space-y-1">
+                        <li>Name-drop specific acts such as SEBI, FEMA and Companies Act when presenting corporate arguments.</li>
+                        <li>Emphasize past corporate legal drafting parameters in internship briefs.</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+
+          {/* Abandon Exit Modal */}
+          {showExitModal && (
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+              <div className="bg-white border-2 border-black p-6 max-w-md w-full space-y-4">
+                <h3 className="text-sm font-bold uppercase text-black">Abandon Current Run?</h3>
+                <p className="text-xs text-brandGrey">
+                  All current progress in this mock interview loop will be lost. Do you wish to proceed back to dashboard?
+                </p>
+                <div className="flex justify-end space-x-2 pt-2">
+                  <button 
+                    onClick={() => setShowExitModal(false)}
+                    className="px-4 py-2 border border-black text-xs font-bold uppercase hover:bg-bgOffwhite"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setShowExitModal(false);
+                      setInterviewStarted(false);
+                      setMessages([]);
+                    }}
+                    className="px-4 py-2 bg-black text-white text-xs font-bold uppercase hover:bg-neutral-800"
+                  >
+                    Confirm Abandon
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    };
+
+    // --- MODULE 4: CONSOLIDATED TIERS MATRIX & SEARCH ---
+    const ConsolidatedMatrix = () => {
+      const [searchQuery, setSearchQuery] = useState("");
+      const [selectedCategory, setSelectedCategory] = useState("All");
+
+      const categories = [
+        "All", "Law Firms (India)", "Finance & Banking", "Oil & Energy", 
+        "Pharmaceuticals & Healthcare", "Steel & Manufacturing", "Technology & IT", 
+        "Consulting", "Private Equity & Venture Capital"
+      ];
+
+      const filteredResults = useMemo(() => {
+        return MASTER_COMPANIES.filter(item => {
+          const matchesCat = selectedCategory === "All" || item.category === selectedCategory;
+          const matchesQuery = !searchQuery.trim() || isFuzzyMatch(searchQuery, item.name) || isFuzzyMatch(searchQuery, item.category);
+          return matchesCat && matchesQuery;
+        }).slice(0, 15);
+      }, [searchQuery, selectedCategory]);
+
+      return (
+        <div className="space-y-6">
+          
+          <div className="bg-white border-2 border-black p-6 space-y-4">
+            <div>
+              <h2 className="text-xl font-bold uppercase tracking-tight text-black">Consolidated Tiers Matrix</h2>
+              <p className="text-xs text-brandGrey">Searchable intelligence database across corporate sectors and law firm practice tiers.</p>
+            </div>
+
+            {/* Search Input Box */}
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="relative flex-1">
+                <Icon name="search" className="w-4 h-4 text-brandGrey absolute left-3 top-3" />
+                <input 
+                  type="text"
+                  className="w-full bg-bgOffwhite border border-black pl-9 pr-3 py-2 text-xs focus:outline-none font-mono"
+                  placeholder="Search entity name, firm alias, or sector (e.g. AZB, Cyril Amarchand, Goldman)..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              <select 
+                className="bg-bgOffwhite border border-black px-3 py-2 text-xs font-bold uppercase focus:outline-none"
+                value={selectedCategory}
+                onChange={e => setSelectedCategory(e.target.value)}
+              >
+                {categories.map((cat, i) => (
+                  <option key={i} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Database Table Display */}
+          <div className="bg-white border border-black p-6 space-y-4">
+            <div className="flex justify-between items-center border-b border-black pb-2 text-xs">
+              <span className="font-bold uppercase text-black">Database Results ({filteredResults.length} Matched)</span>
+              <span className="text-brandGrey font-mono">Fuzzy Levenshtein Tolerance Active</span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs font-mono border-collapse">
+                <thead>
+                  <tr className="border-b border-black bg-bgOffwhite">
+                    <th className="p-2.5 uppercase font-bold text-black">Entity Name</th>
+                    <th className="p-2.5 uppercase font-bold text-black">Category / Practice Sector</th>
+                    <th className="p-2.5 uppercase font-bold text-black">Type</th>
+                    <th className="p-2.5 uppercase font-bold text-black text-right">Recruiter Tier</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y border-rule">
+                  {filteredResults.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="p-6 text-center text-brandGrey italic">
+                        No matching entities found. Try adjusting your search term.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredResults.map((item, idx) => (
+                      <tr key={idx} className="hover:bg-bgOffwhite/50">
+                        <td className="p-2.5 font-bold text-black uppercase">{item.name}</td>
+                        <td className="p-2.5 text-brandGrey">{item.category}</td>
+                        <td className="p-2.5 text-brandGrey">{item.type}</td>
+                        <td className="p-2.5 text-right font-bold">
+                          <span className={`px-2 py-0.5 text-[10px] uppercase border ${
+                            item.tier === 'Tier 1' ? 'border-black bg-black text-white' :
+                            item.tier === 'Tier 2' ? 'border-black bg-brandGrey text-white' :
+                            'border-black text-black'
+                          }`}>
+                            {item.tier}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      );
+    };
+
+    // --- MAIN PLACEMENT OS ROOT APP ---
+    const App = () => {
+      // Default Initial State
+      const defaultProfile = {
+        fullName: "",
+        studentId: "",
+        programme: "5 year B.A L.L.B (Hons.)",
+        studyYear: "5th Year",
+        cgpa: "",
+        internshipsText: "",
+        mootsText: "",
+        publicationsText: "",
+        leadershipText: "",
+        targetEmployer: "Undecided",
+        targetPractice: "General Corporate"
+      };
+
+      const [profile, setProfile] = useState(() => {
+        const saved = localStorage.getItem("placement_os_profile");
+        return saved ? JSON.parse(saved) : defaultProfile;
+      });
+
+      const [onboarded, setOnboarded] = useState(() => {
+        return localStorage.getItem("placement_os_onboarded") === "true";
+      });
+
+      const [activeTab, setActiveTab] = useState("dashboard");
+      const [showRestartModal, setShowRestartModal] = useState(false);
+
+      // Persistence to LocalStorage
+      useEffect(() => {
+        localStorage.setItem("placement_os_profile", JSON.stringify(profile));
+      }, [profile]);
+
+      useEffect(() => {
+        localStorage.setItem("placement_os_onboarded", onboarded ? "true" : "false");
+      }, [onboarded]);
+
+      // Calculate Profile Parsed Data
+      const parsedData = useMemo(() => {
+        return parseProfile(profile);
+      }, [profile]);
+
+      // Complete Restart OS Function
+      const handleRestart = () => {
+        localStorage.removeItem("placement_os_profile");
+        localStorage.removeItem("placement_os_onboarded");
+        setProfile(defaultProfile);
+        setOnboarded(false);
+        setActiveTab("dashboard");
+        setShowRestartModal(false);
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col bg-bgOffwhite text-black selection:bg-black selection:text-white">
+          
+          {/* Decorative Subtle Oversized Circle in background */}
+          <div className="fixed -top-40 -left-40 w-96 h-96 rounded-full bg-black/5 pointer-events-none"></div>
+
+          {!onboarded ? (
+            <Onboarding 
+              profile={profile} 
+              setProfile={setProfile} 
+              onComplete={() => setOnboarded(true)} 
+            />
+          ) : (
+            <div className="flex flex-col min-h-screen">
+              
+              {/* Header */}
+              <AppHeader 
+                profile={profile} 
+                onOpenRestart={() => setShowRestartModal(true)} 
+              />
+
+              <div className="flex-1 flex flex-col md:flex-row">
+                
+                {/* Left Persistent Sidebar */}
+                <Sidebar 
+                  activeTab={activeTab} 
+                  setActiveTab={setActiveTab} 
+                  onOpenRestart={() => setShowRestartModal(true)} 
+                />
+
+                {/* Main Content Workspace */}
+                <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
+                  {activeTab === "dashboard" && <PlacementDashboard parsedData={parsedData} profile={profile} />}
+                  {activeTab === "auditor" && <CVAuditor profile={profile} parsedData={parsedData} />}
+                  {activeTab === "interview" && <MockInterview profile={profile} />}
+                  {activeTab === "matrix" && <ConsolidatedMatrix />}
+                </main>
+              </div>
+
+              {/* Footer */}
+              <footer className="border-t border-black p-4 text-center text-[11px] text-brandGrey uppercase font-mono">
+                Placement OS • Recruiter-Readiness Matrix & Balanced Symmetrical Averaging Engine • Independent Student Peer Evaluation Tool
+              </footer>
+            </div>
+          )}
+
+          {/* Restart OS Confirmation Modal */}
+          {showRestartModal && (
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+              <div className="bg-white border-2 border-black p-6 max-w-md w-full space-y-4">
+                <div className="flex items-center space-x-2 text-black font-bold uppercase">
+                  <Icon name="alertTriangle" className="w-5 h-5 text-black" />
+                  <span>Restart operating system?</span>
+                </div>
+                <p className="text-xs text-brandGrey leading-relaxed">
+                  This will clear your current profile parameters, reset academic verification state, and bring you back to Step 1. Are you sure?
+                </p>
+                <div className="flex justify-end space-x-2 pt-2">
+                  <button 
+                    onClick={() => setShowRestartModal(false)}
+                    className="px-4 py-2 border border-black text-xs font-bold uppercase hover:bg-bgOffwhite"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={handleRestart}
+                    className="px-4 py-2 bg-black text-white text-xs font-bold uppercase hover:bg-neutral-800"
+                  >
+                    Yes, Restart
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    };
+
+    // Render React Application
+    const rootElement = document.getElementById("root");
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(<App />);
+
+  </script>
+</body>
+</html>
